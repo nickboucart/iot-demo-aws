@@ -56,6 +56,12 @@ options={{
 		}
 	},
 	"curve": "curveMonotoneX",
+	"experimental":true,
+	"zoomBar": {
+		"top": {
+			enabled: true
+		}
+	},
   "timeScale": {
 		"addSpaceOnEdges": 0,
     "timeIntervalFormats": {
