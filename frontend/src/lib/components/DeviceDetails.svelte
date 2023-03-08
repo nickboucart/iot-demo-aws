@@ -26,8 +26,8 @@ import "@carbon/charts/styles.css";
 
 <p> Details for {device.thingName}</p>
 
-<a href="#" on:click|preventDefault={() => setColor("green")}>set color to green</a>
-<a href="#" on:click|preventDefault={() => setColor("red")}>set color to red</a>
+<button type="button" on:click|preventDefault={() => setColor("green")} class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">set color to green</button>
+<button type="button" on:click|preventDefault={() => setColor("red")} class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">set color to red</button>
 
 
 
@@ -71,7 +71,7 @@ options={{
       }
     }
   },
-	"height": "400px"
+	"height": "250px"
 }}
 ></LineChart>
 {/await}
