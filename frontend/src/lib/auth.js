@@ -5,7 +5,6 @@ async function getCurrentUser() {
 	let user = null;
 	try {
 		user = await Auth.currentAuthenticatedUser();
-		console.log(user);
 	} catch (error) {
 		console.log('no current user')
 	}
