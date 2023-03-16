@@ -1,4 +1,3 @@
-import paho.mqtt.client as paho
 import os
 import socket
 import ssl
@@ -7,9 +6,10 @@ from random import uniform
 import json
 import tempfile
 import random
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 # Refactored original source - https://github.com/mariocannistra/python-paho-mqtt-for-aws-iot
 
@@ -58,43 +58,38 @@ class PubSub(object):
 
     def bootstrap_mqtt(self):
 
-        self.mqttc = paho.Client(client_id=self.config['thingName'])
-        self.mqttc.on_connect = self.__on_connect
-        self.mqttc.on_message = self.__on_message
-        self.mqttc.on_publish = self.__on_publish
-        self.mqttc.on_log = self.__on_log
+        self.mqttc = AWSIoTMQTTClient(self.config['thingName'])
+        self.mqttc.configureEndpoint(self.config['endpoint'], 443)
+        
+        # self.mqttc.on_connect = self.__on_connect
+        # self.mqttc.on_message = self.__on_message
+        # self.mqttc.on_publish = self.__on_publish
+        # self.mqttc.on_log = self.__on_log
 
-        awshost = self.config['endpoint']
-        awsport = 8883
 
         caPath = self.saveCertInTempFile(self.config['awsRootPem'])
         certPath = self.saveCertInTempFile(self.config['certPem'])
         keyPath = self.saveCertInTempFile(self.config['privateKey'])
 
-        self.mqttc.tls_set(caPath,
-                           certfile=certPath,
-                           keyfile=keyPath,
-                           cert_reqs=ssl.CERT_REQUIRED,
-                           tls_version=ssl.PROTOCOL_TLSv1_2,
-                           ciphers=None)
+        self.mqttc.configureCredentials(caPath, keyPath, certPath)
 
-        result_of_connection = self.mqttc.connect(
-            awshost, awsport, keepalive=120)
-        self.logger.debug(result_of_connection)
-
-        if result_of_connection == 0:
-            self.connect = True
+        self.connect = self.mqttc.connect()
+        
+        if self.connect:
             self.logger.info('Connected!!')
+            self.mqttc.publish(self.shadowRootTopic + '/update',
+                           json.dumps(startState), 1)
+            self.mqttc.subscribe(self.topic, 1, self.__on_message)
+
 
         return self
 
     def start(self):
-        self.mqttc.loop_start()
 
         while True:
             sleep(2)
             if self.connect == True:
                 self.mqttc.publish('metrics', json.dumps(
-                    {"temp": 20+2*random.random(), "hum": random.randint(60, 100), "pressure": random.randint(940, 1060) }), qos=1)
+                    {"temp": 20+2*random.random(), "hum": random.randint(60, 100), "pressure": random.randint(940, 1060) }), 1)
             else:
                 self.logger.debug("Attempting to connect.")
