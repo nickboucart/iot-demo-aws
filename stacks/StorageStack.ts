@@ -12,6 +12,8 @@ export function StorageStack( {stack, app}) {
 		
 	});
 
+	table.node.addDependency(db);
+
 	stack.addOutputs({
 		metricsDb: db.databaseName
 	})

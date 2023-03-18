@@ -4,6 +4,7 @@
 	import DeviceDetails from "$lib/components/DeviceDetails.svelte";
 	import { logout } from "$lib/auth";
 	import { goto } from "$app/navigation";
+	import Card from "$lib/components/Card.svelte";
 
 	/**
 	 * @type {any[]}
@@ -140,79 +141,50 @@
 	<div
 		class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
 	>
-		<!-- <div class="grid grid-cols-3 gap-4 mb-4">
-				<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-		 </div> -->
-		<div
-			class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800"
-		>
-			<h2>Register new device</h2>
+		<div class="flex flex-row">
+			<Card title="Register a device" size="basis-full">
+				<form class="space-y-6" on:submit|preventDefault={handleSubmit}>
+					<div>
+						<label
+							for="device"
+							class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+							>Device name</label
+						>
+						<input
+							type="text"
+							bind:value={thingName}
+							name="device"
+							id="device"
+							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							placeholder="device-1234"
+							required
+						/>
+					</div>
 
-			<form on:submit|preventDefault={handleSubmit}>
-				<label>
-					Name your device:
-					<input type="text" bind:value={thingName} />
-				</label>
-
-				<button type="submit" disabled={!isValidateDeviceName(thingName)}
-					>Submit</button
-				>
-			</form>
-
-			{#if thing}
-				<h2>
-					download your device config below. Be carefull, this is only displayed
-					once!
-				</h2>
-				<a
-					href={"data:text/json;charset=utf-8," +
-						encodeURIComponent(JSON.stringify(thing))}
-					download={thing.thingName + ".json"}>Download device config</a
-				>
-			{/if}
+					<button
+						type="submit"
+						disabled={!isValidateDeviceName(thingName)}
+						class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						>Register Device</button
+					>
+				</form>
+				{#if thing}
+					<h5 class="text-lg p-4">
+						Download your device config below. Be carefull, this is only
+						displayed once!
+					</h5>
+					<a
+						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+						href={"data:text/json;charset=utf-8," +
+							encodeURIComponent(JSON.stringify(thing))}
+						download={thing.thingName + ".json"}>Download device config</a
+					>
+				{/if}
+			</Card>
 		</div>
-		<!-- <div class="grid grid-cols-2 gap-4 mb-4">
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-		 </div> -->
+
 		{#if activeDevice}
-			<div
-				class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800"
-			>
-				<DeviceDetails device={activeDevice} />
-			</div>
+			<DeviceDetails device={activeDevice} />
 		{/if}
-		<!-- <div class="grid grid-cols-2 gap-4">
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-				<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-					 <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-				</div>
-		 </div> -->
 	</div>
 </div>
