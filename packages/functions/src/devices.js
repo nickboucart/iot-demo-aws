@@ -16,15 +16,11 @@ import {
 } from "@aws-sdk/client-iot-data-plane";
 import { getAwsRootCert } from '../../core/src/aws-root-cert';
 import { TimestreamQueryClient, QueryCommand } from "@aws-sdk/client-timestream-query";
+import { getUserId } from "@iot-starter-app/core/user-helper"
 
 const client = new IoTClient({});
 const dataPlaneClient = new IoTDataPlaneClient({});
 const tsClient = new TimestreamQueryClient();
-
-
-const getUserId = (event) => {
-	return event.requestContext.authorizer.iam.cognitoIdentity.identityId;
-}
 
 const isThisAThingOfMine = async (thingName, event) => {
 	const describeThingCmd = new DescribeThingCommand({
@@ -89,8 +85,8 @@ export const create = ApiHandler(async (event) => {
 	};
 });
 
-export const list = ApiHandler(async (event) => {
-
+export const list = ApiHandler(async (event, context) => {
+	console.log(JSON.stringify(context));
 	const listThingsCmd = new ListThingsCommand({
 		attributeName: "owner",
 		attributeValue: getUserId(event),
